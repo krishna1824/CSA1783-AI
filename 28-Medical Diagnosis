@@ -1,0 +1,57 @@
+[8:21 AM, 8/30/2023] +91 70938 49918: % Facts representing parent-child relationships
+parent(john, mary).
+parent(john, alice).
+parent(alice, bob).
+parent(alice, carol).
+parent(mary, david).
+parent(mary, emma).
+parent(david, frank).
+parent(david, grace).
+
+% Rules for defining different relationships
+sibling(X, Y) :-
+    parent(P, X),
+    parent(P, Y),
+    X \= Y.
+
+grandparent(X, Z) :-
+    parent(X, Y),
+    parent(Y, Z).
+
+ancestor(X, Z) :-
+    parent(X, Z).
+ancestor(X, Z) :-
+    parent(X, Y),
+    ancestor(Y, Z).
+
+% Query examples
+% To find siblings
+% ?- sibling(mary, alice).
+
+% To find grandparents
+% ?- grandparent(john, bob).
+
+% To find ancestors
+% ?- ancestor(john, grace).
+[8:23 AM, 8/30/2023] +91 70938 49918: % Facts about illnesses and their symptoms
+symptom(flu, fever).
+symptom(flu, cough).
+symptom(flu, sore_throat).
+symptom(cold, sneezing).
+symptom(cold, runny_nose).
+symptom(headache, head_pain).
+
+% Rule to diagnose illness based on symptoms
+diagnose_illness(Symptoms, Illness) :-
+    findall(I, (symptom(I, Sym), member(Sym, Symptoms)), PossibleIllnesses),
+    list_to_set(PossibleIllnesses, UniqueIllnesses),
+    length(UniqueIllnesses, NumUniqueIllnesses),
+    NumUniqueIllnesses = 1,
+    member(Illness, UniqueIllnesses).
+
+% Main predicate to interact with the user
+main :-
+    write("Enter a list of symptoms (comma-separated): "),
+    read(Symptoms),
+    diagnose_illness(Symptoms, Illness),
+    format("Based on the symptoms, the possible illness is: ~w", [Illness]).
